@@ -1,0 +1,23 @@
+.main-container {
+  font-family: 'GmarketSansMedium';
+}
+
+.change-link{
+  font-family: 'GmarketSansBold';
+}
+
+.chart-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 5px;
+}
+
+.change-chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 620px;
+  height: 400px;
+}
