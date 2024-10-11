@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/css/signup.css"/>
+</head>
+<body>
+<form id="signupForm" method="post" action="/signup" class="signup-container">
+    <h1>회원 가입</h1>
+    <div class="email-group">
+        <input type="text" id="user_id" class="signup-input" placeholder="아이디" required/>
+        <select id="email_domain" class="signup-input" required>
+            <option value="@naver.com">@naver.com</option>
+            <option value="@gmail.com">@gmail.com</option>
+            <option value="@yahoo.com">@yahoo.com</option>
+        </select>
+        <button type="button" id="checkUserIdButton" class="check-button">중복 확인</button>
+    </div>
+    <input type="password" id="user_password" name="user_password" class="signup-input" placeholder="비밀번호" required/>
+    <input type="password" id="confirmPassword" name="confirmPassword" class="signup-input" placeholder="비밀번호 확인" required/>
+    <input type="text" id="user_name" name="user_name" class="signup-input" placeholder="이름" required/>
+    <div class="nickname-group">
+        <input type="text" id="nickname" name="nickname" class="signup-input" placeholder="닉네임" required/>
+        <button type="button" id="checkNicknameButton" class="nickname-check-button">중복 확인</button>
+    </div>
+    <div>
+        <button type="submit" class="signup-button" id="signupSubmitButton">계정 생성</button>
+    </div>
+</form>
+<script>
+    let isUserIdValid = false;
+    let isNicknameValid = false;
+
+    document.getElementById('checkUserIdButton').addEventListener('click', function() {
+        const userId = document.getElementById('user_id').value;
+        const emailDomain = document.getElementById('email_domain').value;
+        const email = userId + emailDomain;
+
+        if (!userId) {
+            alert('아이디를 입력해주세요.');
+            return;
+        }
+
+        fetch(`/member/checkUserId/${email}`)
+            .then(response => response.json())
+            .then(isExists => {
+                if (isExists) {
+                    alert('아이디가 이미 사용 중입니다.');
+                    document.getElementById('user_id').value = ''; // Clear the input field
+                    isUserIdValid = false;
+                } else {
+                    alert('사용 가능한 아이디입니다.');
+                    isUserIdValid = true;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('중복 확인 중 오류가 발생했습니다.');
+                isUserIdValid = false;
+            });
+    });
+
+    document.getElementById('checkNicknameButton').addEventListener('click', function() {
+        const nickname = document.getElementById('nickname').value;
+
+        if (!nickname) {
+            alert('닉네임을 입력해주세요.');
+            return;
+        }
+
+        fetch(`/member/checkNickName/${nickname}`)
+            .then(response => response.json())
+            .then(isExists => {
+                if (isExists) {
+                    alert('닉네임이 이미 사용 중입니다.');
+                    document.getElementById('nickname').value = ''; // Clear the input field
+                    isNicknameValid = false;
+                } else {
+                    alert('사용 가능한 닉네임입니다.');
+                    isNicknameValid = true;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('중복 확인 중 오류가 발생했습니다.');
+                isNicknameValid = false;
+            });
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const requiredFields = ['user_id', 'user_password', 'confirmPassword', 'user_name', 'nickname'];
+        for (let fieldId of requiredFields) {
+            if (!document.getElementById(fieldId).value) {
+                alert('모든 입력 칸을 채워주세요.');
+                return;
+            }
+        }
+
+        if (!isUserIdValid) {
+            alert('아이디 중복 확인을 해주세요.');
+            return;
+        }
+
+        if (!isNicknameValid) {
+            alert('닉네임 중복 확인을 해주세요.');
+            return;
+        }
+
+        const user_password = document.getElementById('user_password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordPattern.test(user_password)) {
+            alert('비밀번호는 최소 8자, 하나 이상의 대문자, 소문자, 숫자 및 특수 문자를 포함해야 합니다.');
+            return;
+        }
+
+        if (user_password !== confirmPassword) {
+            alert('비밀번호 확인란의 비밀번호가 입력하신 비밀번호와 다릅니다.');
+            return;
+        }
+
+        const formData = new FormData(event.target);
+        const jsonData = {};
+        formData.forEach((value, key) => { jsonData[key] = value; });
+
+        const userId = document.getElementById('user_id').value;
+        const emailDomain = document.getElementById('email_domain').value;
+        const email = userId + emailDomain;
+        jsonData['user_id'] = email;
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(jsonData['user_id'])) {
+            alert('유효한 이메일 주소를 입력해주세요.');
+            return;
+        }
+
+        fetch('/member', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(jsonData)
+        }).then(response => {
+            if (response.ok) {
+                alert('회원가입이 완료 됐습니다! 로그인 해주세요!');
+                window.location.href = '/login'; // Redirect to login page
+            } else {
+                response.json().then(data => {
+                    alert('Failed to sign up: ' + (data.message || 'Unknown error'));
+                });
+            }
+        }).catch(error => {
+            alert('Error: ' + error.message);
+        });
+    });
+</script>
+</body>
+</html>

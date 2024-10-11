@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Logout</title>
+    <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+<div class="logout-container">
+    <h1>Goodbye, <span id="nickname">User</span>!</h1>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('/user/details', {
+            credentials: 'include' // Ensure credentials are included with the request
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('nickname').textContent = data.nickname;
+        })
+        .catch(error => console.error('Failed to fetch user details', error));
+    });
+
+    function logout() {
+        fetch('/logout', {
+            method: 'POST', // Use POST if configured this way in Spring Security
+            credentials: 'include' // Needed to handle session cookies
+        })
+        .then(() => {
+            window.location.href = '/login'; // Redirect to login page on successful logout
+        })
+        .catch(error => console.error('Logout failed', error));
+    }
+</script>
+</body>
+</html>

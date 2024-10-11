@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/css/login.css"/>
+</head>
+<body>
+<div class="login-container">
+    <form method="post" action="/auth/login" class="login-form">
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+        <h1>로그인</h1>
+        <input type="text" placeholder="ID" class="login-input" name="userId"/>
+        <input type="password" placeholder="비밀번호" class="login-input" name="userPassword"/>
+        <div class="button-container">
+            <button type="button" onclick="location.href='/signup'" class="signup-button">회원가입</button>
+            <button type="submit" class="login-button">로그인</button>
+        </div>
+        <button type="button" onclick="location.href='/resetPassword'" class="reset-password-button">비밀번호 재설정</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+        }
+    }
+</script>
+
+</body>
+</html>

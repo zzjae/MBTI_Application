@@ -1,0 +1,88 @@
+* {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  font-family: 'GmarketSansMedium';
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.login-container {
+  background: white;
+  padding: 100px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-input,
+.signup-button,
+.login-button,
+.reset-password-button{
+  font-family: 'GmarketSansMedium';
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-input:focus {
+  border-color: #0056b3;
+  outline: none;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-button,
+.login-button {
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  background-color: #f3f3f3;
+  color: black;
+}
+
+.signup-button:hover,
+.login-button:hover{
+    transform: scale(1.03);
+    background-color: #e1e1e1;
+}
+
+.login-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+.reset-password-button{
+    font-family: 'GmarketSansMedium';
+  background-color:#28a745;
+}
+.reset-password-button:hover{
+  transform: scale(1.03);
+  background-color: #218838;
+}
